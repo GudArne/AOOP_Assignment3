@@ -24,4 +24,7 @@ public class Tree<T> {
     public T getValue() { 
         return value; 
     }
+
+    
+
 }
