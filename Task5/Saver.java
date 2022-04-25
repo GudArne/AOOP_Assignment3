@@ -8,32 +8,41 @@ import java.lang.reflect.Method;
 public class Saver<T> {
 
     int index = 0;
+    int level = 0;
+    Boolean isEnd = false;
 
     public String save(Object o){
         Class aClass = o.getClass();
         Annotation[] annotations = aClass.getAnnotations();
-        String retval = "";
+        String retEle = "";
+        String retSub = "";
         boolean first = true;
+        
 
         for(int i = 0; i < annotations.length; i++){
             Method[] methods = aClass.getDeclaredMethods();
             for(Method method : methods){
-                if(method.getName().equals("getValue")){
+                if(method.getAnnotation(ElementField.class) != null){
                     try {
-                        //retval += "<node value= " + method.invoke(o) + ">\n";
-                        retval = show(1, method.invoke(o).toString(), retval);
+                        retEle+= show(level, method.invoke(o).toString(), isEnd);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                else if(method.getName().equals("getChildren")){
+                else if(method.getAnnotation(SubElements.class) != null){
                     try {
                         Object[] children = (Object[]) method.invoke(o);
                         if(children != null){
+                            level++;
+                            isEnd = true;
                             for(Object child : children){
-                                retval += save(child);
+                                retSub += save(child);
                                 //retval += "\t" + save(child);
                             }
+                        retSub += indent(level)+"</subnodes> \n";
+                        retSub += indent(level-1)+"</node> \n";
+                        isEnd = false;   
+                        level --;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -41,17 +50,39 @@ public class Saver<T> {
                 }
             }
         }
+        return retEle + retSub;
+    }
+    public String indent(int level){
+        String retval = "";
+        for(int i = 0; i < level; i++){
+            retval += "\t";
+        }
         return retval;
     }
-    
-	public String show(int level, String value, String result) {
+
+    String end = "";
+    String subIndent = "";
+	public String show(int lvl, String value, Boolean isEnd) {
 
 		String indent = "";
-		for(int i=0; i<level; i++) {
-			indent += "\t"; 
-		}
 
-		return indent+value+"\n"+result;
+        end = isEnd ? "'/>" : "'>";
+        
+
+        if(!isEnd){
+            subIndent = indent(lvl+1);
+            // for(int i=0; i<lvl+1; i++) {
+            //     subIndent += "\t"; 
+            // }
+            end += "\n" + subIndent + "<subnodes>";
+            lvl--;
+        }
+        indent = indent(lvl+1);
+        // for(int i=0; i<lvl+1; i++) {
+		// 	indent += "\t"; 
+		// }
+
+		return indent+"<node value='"+value+end+"\n";
 		
 		
 	}
@@ -67,10 +98,7 @@ public class Saver<T> {
             String r = s.save(t);
             
             System.out.println(r);
-
-       
     }
-    
 }
 
 /*

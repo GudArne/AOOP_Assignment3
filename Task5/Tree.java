@@ -19,12 +19,9 @@ public class Tree<T> {
     public Tree<T>[] getChildren() { 
         return children; 
     }
-    
+
     @ElementField(name="value")
     public T getValue() { 
         return value; 
     }
-
-    
-
 }

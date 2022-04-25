@@ -7,6 +7,6 @@ import java.lang.annotation.*;
 
 public @interface Element {
 
-    String name() default "ElementNAME" ;
+    String name() default "ElementName" ;
 }
   
