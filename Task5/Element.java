@@ -2,8 +2,8 @@ package Task5;
 
 import java.lang.annotation.*;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME) // accessible during runtime
+@Target(ElementType.TYPE) // can only annotate a class, enumeration, or interface.
 
 public @interface Element {
 

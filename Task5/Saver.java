@@ -3,25 +3,25 @@ package Task5;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+@SuppressWarnings("unchecked")
 public class Saver<T> {
 
-    int index = 0;
-    int level = 0;
-    Boolean isEnd = false;
+    int level = 0; // start indent-level
+    Boolean isEnd = false; // end of a node?
 
     /*
         May work different on PC and in IDE. 
         The declared methods stored in the array do seem to swap the order of the methods on different pc.
-        The top method is the last method in the array for me, therefor the program reads it last. 
+        The top method is the last method in the array for me, therefore the program reads it last. 
     */
     public String save(Object o){
-        Class aClass = o.getClass();
-        Annotation[] annotations = aClass.getAnnotations();
+        Class<?> clazz = o.getClass();
+        Annotation[] annotations = clazz.getAnnotations();
         String retEle = "";
         String retSub = "";
 
         for(int i = 0; i < annotations.length; i++){
-            Method[] methods = aClass.getDeclaredMethods();
+            Method[] methods = clazz.getDeclaredMethods();
             for(Method method : methods){
                 if(method.getAnnotation(ElementField.class) != null){
                     try {
@@ -36,13 +36,15 @@ public class Saver<T> {
                         if(children != null){
                             level++;
                             isEnd = true;
-                            for(Object child : children){
-                                retSub += save(child);
-                            }
-                        retSub += indent(level)+"</subnodes> \n";
-                        retSub += indent(level-1)+"</node> \n";
-                        isEnd = false;   
-                        level --;
+
+                                for(Object child : children){
+                                    retSub += save(child);
+                                }
+
+                            retSub += indent(level)+"</subnodes> \n";
+                            retSub += indent(level-1)+"</node> \n";
+                            isEnd = false;   
+                            level --;
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -60,15 +62,13 @@ public class Saver<T> {
         return retval;
     }
 
-    String end = "";
-    String subIndent = "";
 	public String show(int lvl, String value, Boolean isEnd) {
 
 		String indent = "";
-        end = isEnd ? "'/>" : "'>";
+        String end = isEnd ? "'/>" : "'>";
 
         if(!isEnd){
-            subIndent = indent(lvl+1);
+            String subIndent = indent(lvl+1);
             end += "\n" + subIndent + "<subnodes>";
             lvl--;
         }
