@@ -17,14 +17,13 @@ public class Saver<T> {
     String ElementFieldAnnoName = "";
     String SubElementsAnnoName = "";
     String ElementAnnoName = "";
-    
+
     public String save(Object o){
         Class<?> clazz = o.getClass();
         Annotation[] annotations = clazz.getAnnotations();
         String retEle = "";
         String retSub = "";
         ElementAnnoName = clazz.getAnnotation(Element.class).name();
-        
 
         for(int i = 0; i < annotations.length; i++){
             Method[] methods = clazz.getDeclaredMethods();
