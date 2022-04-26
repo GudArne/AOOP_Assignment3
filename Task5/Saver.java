@@ -9,11 +9,6 @@ public class Saver<T> {
     int level = 0; // start indent-level
     Boolean isEnd = false; // end of a node?
 
-    /*
-        May work different on other PC and in IDE. 
-        The declared methods stored in the array do seem to swap the order of the methods on different pc.
-        The top method (getValue) is the last method in the array for me, therefore the program reads it last. 
-    */
     String ElementFieldAnnoName = "";
     String SubElementsAnnoName = "";
     String ElementAnnoName = "";
