@@ -14,17 +14,24 @@ public class Saver<T> {
         The declared methods stored in the array do seem to swap the order of the methods on different pc.
         The top method (getValue) is the last method in the array for me, therefore the program reads it last. 
     */
+    String ElementFieldAnnoName = "";
+    String SubElementsAnnoName = "";
+    String ElementAnnoName = "";
+    
     public String save(Object o){
         Class<?> clazz = o.getClass();
         Annotation[] annotations = clazz.getAnnotations();
         String retEle = "";
         String retSub = "";
+        ElementAnnoName = clazz.getAnnotation(Element.class).name();
+        
 
         for(int i = 0; i < annotations.length; i++){
             Method[] methods = clazz.getDeclaredMethods();
             for(Method method : methods){
                 if(method.getAnnotation(ElementField.class) != null){
                     try {
+                        ElementFieldAnnoName = method.getAnnotation(ElementField.class).name();
                         retEle+= show(level, method.invoke(o).toString(), isEnd);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -32,6 +39,7 @@ public class Saver<T> {
                 }
                 else if(method.getAnnotation(SubElements.class) != null){
                     try {
+                        SubElementsAnnoName = method.getAnnotation(SubElements.class).name();
                         Object[] children = (Object[]) method.invoke(o);
                         if(children != null){
                             level++;
@@ -40,9 +48,8 @@ public class Saver<T> {
                                 for(Object child : children){
                                     retSub += save(child);
                                 }
-
-                            retSub += indent(level)+"</subnodes> \n";
-                            retSub += indent(level-1)+"</node> \n";
+                            retSub += indent(level)+ "</"+SubElementsAnnoName +"> \n";
+                            retSub += indent(level-1)+ "</"+ElementAnnoName +"> \n";
                             isEnd = false;   
                             level --;
                         }
@@ -69,12 +76,12 @@ public class Saver<T> {
 
         if(!isEnd){
             String subIndent = indent(lvl+1);
-            end += "\n" + subIndent + "<subnodes>";
+            end += "\n" + subIndent + "<"+SubElementsAnnoName+">";
             lvl--;
         }
         indent = indent(lvl+1);
 
-		return indent+"<node value='"+value+end+"\n";
+		return indent+"<"+ElementAnnoName+ " "+ElementFieldAnnoName+"='"+value+end+"\n";
 	}
     public static void main(String[] args){
 
