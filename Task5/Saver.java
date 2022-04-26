@@ -10,9 +10,9 @@ public class Saver<T> {
     Boolean isEnd = false; // end of a node?
 
     /*
-        May work different on PC and in IDE. 
+        May work different on other PC and in IDE. 
         The declared methods stored in the array do seem to swap the order of the methods on different pc.
-        The top method is the last method in the array for me, therefore the program reads it last. 
+        The top method (getValue) is the last method in the array for me, therefore the program reads it last. 
     */
     public String save(Object o){
         Class<?> clazz = o.getClass();
@@ -84,7 +84,7 @@ public class Saver<T> {
                 new Tree("sub1"),
                 new Tree("sub2")
             });
-            Saver s = new Saver();
+            Saver<?> s = new Saver();
             String r = s.save(t);
             
             System.out.println(r);
